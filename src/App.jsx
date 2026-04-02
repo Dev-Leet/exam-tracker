@@ -73,6 +73,15 @@ const examsData = [
     code: 'CDS3005',
     name: 'Foundations of Data Science',
     type: 'Term End'
+  },
+  {
+    id: 9,
+    date: '2026-04-25',
+    startTime: '09:00', // 09:00 AM
+    endTime: '12:00',   // 12:00 PM
+    code: 'NPTEL',
+    name: 'Marketing Analysis',
+    type: 'Term End'
   }
 ];
 
