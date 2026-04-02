@@ -2,97 +2,77 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, Clock, BookOpen, AlertCircle, CheckCircle2, Timer, Hourglass, Section, Calendar as CalendarIcon, X } from 'lucide-react';
 
 const examsData = [
-  // Grade Improvement Section
+  {
+    id: 1,
+    date: '2026-04-20',
+    startTime: '09:30',
+    endTime: '12:30',
+    code: 'CSE3006',
+    name: 'Computer Networks',
+    type: 'Term End'
+  },
   {
     id: 2,
-    date: '2026-03-05',
-    startTime: '13:15',
-    endTime: '16:15',
-    code: 'CSE4001',
-    name: 'Internet and Web Programming',
-    type: 'Grade Improvement'
+    date: '2026-04-13',
+    startTime: '09:30',
+    endTime: '12:30',
+    code: 'CSE3009',
+    name: 'Parallel and Distributed Computing',
+    type: 'Term End'
   },
   {
     id: 3,
-    date: '2026-03-06',
-    startTime: '09:15',
-    endTime: '12:15',
-    code: 'CSE3001',
-    name: 'Database Management Systems',
-    type: 'Grade Improvement'
+    date: '2026-04-19',
+    startTime: '09:30',
+    endTime: '12:30',
+    code: 'CSE3012',
+    name: 'Mobile Application Development',
+    type: 'Term End'
   },
-  // Mid Term Section
   {
     id: 4,
-    date: '2026-03-16',
-    startTime: '14:30', // 02:30 PM
-    endTime: '16:00',   // 04:00 PM
-    code: 'CSE3006',
-    name: 'Computer Networks',
-    type: 'Mid Term'
+    date: '2026-04-22',
+    startTime: '09:30',
+    endTime: '12:30',
+    code: 'MAT3002',
+    name: 'Applied Linear Algebra',
+    type: 'Term End'
   },
   {
     id: 5,
-    date: '2026-03-11',
-    startTime: '09:15', // 09:15 AM
-    endTime: '10:45',   // 10:45 AM
-    code: 'CSE3009',
-    name: 'Parallel and Distributed Computing',
-    type: 'Mid Term'
+    date: '2026-04-23',
+    startTime: '09:30',
+    endTime: '12:30',
+    code: 'PLA1006',
+    name: 'Lateral Thinking',
+    type: 'Term End'
   },
   {
     id: 6,
-    date: '2026-03-18',
-    startTime: '14:30', // 02:30 PM
-    endTime: '16:00',   // 04:00 PM
-    code: 'CSE3012',
-    name: 'Mobile Application Development',
-    type: 'Mid Term'
+    date: '2026-04-16',
+    startTime: '09:30',
+    endTime: '12:30',
+    code: 'CSE3016',
+    name: 'AWS Solution Architect',
+    type: 'Term End'
   },
   {
     id: 7,
-    date: '2026-03-12',
-    startTime: '14:30', // 02:30 PM
-    endTime: '16:00',   // 04:00 PM
-    code: 'MAT3002',
-    name: 'Applied Linear Algebra',
-    type: 'Mid Term'
+    date: '2026-04-15',
+    startTime: '09:30',
+    endTime: '12:30',
+    code: 'CSE4019',
+    name: 'Advanced Java Programming',
+    type: 'Term End'
   },
   {
     id: 8,
-    date: '2026-03-20',
-    startTime: '09:15', // 09:15 AM
-    endTime: '10:45',   // 10:45 AM
-    code: 'PLA1006',
-    name: 'Lateral Thinking',
-    type: 'Mid Term'
-  },
-  {
-    id: 9,
-    date: '2026-03-17',
-    startTime: '09:15', // 09:15 AM
-    endTime: '10:45',   // 10:45 AM
-    code: 'CSE3016',
-    name: 'AWS Solution Architect',
-    type: 'Mid Term'
-  },
-  {
-    id: 10,
-    date: '2026-03-09',
-    startTime: '14:30', // 02:30 PM
-    endTime: '16:00',   // 04:00 PM
-    code: 'CSE4019',
-    name: 'Advanced Java Programming',
-    type: 'Mid Term'
-  },
-  {
-    id: 11,
-    date: '2026-03-18',
-    startTime: '09:15', // 09:15 AM
-    endTime: '10:45',   // 10:45 AM
+    date: '2026-04-28',
+    startTime: '10:00',
+    endTime: '13:00', // 1:00 PM
     code: 'CDS3005',
     name: 'Foundations of Data Science',
-    type: 'Mid Term'
+    type: 'Term End'
   }
 ];
 
@@ -108,8 +88,8 @@ const getWeekday = (dateString) => {
 const formatTime = (timeString) => {
   const [hours, minutes] = timeString.split(':');
   const date = new Date();
-  date.setHours(parseInt(hours));
-  date.setMinutes(parseInt(minutes));
+  date.setHours(parseInt(hours, 10));
+  date.setMinutes(parseInt(minutes, 10));
   return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
 };
 
@@ -141,15 +121,13 @@ const calculateTimeStatus = (exam) => {
 
 const getExamColor = (type) => {
   switch (type) {
+    case 'Term End': return 'bg-indigo-500';
     case 'Grade Improvement': return 'bg-amber-500';
-    case 'Mid Term': return 'bg-indigo-500';
     default: return 'bg-emerald-500';
   }
 };
 
 const FullCalendar = ({ exams }) => {
-  const [selectedDayInfo, setSelectedDayInfo] = useState(null);
-
   const allDates = exams.map(e => new Date(e.date));
   const minDate = new Date(Math.min(...allDates));
   const maxDate = new Date(Math.max(...allDates));
@@ -178,14 +156,8 @@ const FullCalendar = ({ exams }) => {
     return acc;
   }, {});
 
-  const handleDayClick = (dateStr, dayExams) => {
-    if (dayExams && dayExams.length > 0) {
-      setSelectedDayInfo({ date: dateStr, exams: dayExams });
-    }
-  };
-
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full shadow-2xl relative mt-4">
+    <div className="bg-slate-900 border border-slate-800 rounded-2xl w-full shadow-2xl overflow-hidden mt-4">
       <div className="flex items-center gap-3 p-6 border-b border-slate-800 bg-slate-800/50">
         <CalendarIcon className="text-indigo-400 w-6 h-6" />
         <h3 className="text-xl font-bold text-white">Interactive Schedule</h3>
@@ -225,15 +197,9 @@ const FullCalendar = ({ exams }) => {
                   const hasExams = dayExams && dayExams.length > 0;
                   
                   return (
-                    <button
+                    <div
                       key={day}
-                      onClick={() => handleDayClick(dateStr, dayExams)}
-                      disabled={!hasExams}
-                      className={`
-                        bg-slate-900 min-h-[120px] p-2 flex flex-col transition-colors border-t border-l border-slate-800/50 text-left
-                        ${hasExams ? 'hover:bg-slate-800/80 cursor-pointer bg-slate-800/20' : 'cursor-default'}
-                        ${selectedDayInfo?.date === dateStr ? 'ring-2 ring-indigo-500 bg-slate-800/50 z-10 relative' : ''}
-                      `}
+                      className={`bg-slate-900 min-h-[120px] p-2 flex flex-col transition-colors border-t border-l border-slate-800/50 ${hasExams ? 'bg-slate-800/20' : ''}`}
                     >
                       <span className={`text-sm font-medium self-end w-6 h-6 flex items-center justify-center rounded-full mb-2
                         ${hasExams ? 'bg-slate-700 text-white' : 'text-slate-500'}
@@ -258,7 +224,7 @@ const FullCalendar = ({ exams }) => {
                            </div>
                         ))}
                       </div>
-                    </button>
+                    </div>
                   )
                 })}
               </div>
@@ -266,49 +232,6 @@ const FullCalendar = ({ exams }) => {
           );
         })}
       </div>
-
-      {/* Interactive Tooltip / Modal for Selected Day */}
-      {selectedDayInfo && (
-        <div className="absolute z-20 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-11/12 max-w-sm bg-slate-800 border border-slate-600 rounded-xl shadow-2xl p-4 animate-in fade-in zoom-in duration-200">
-          <div className="flex justify-between items-start mb-3 border-b border-slate-700 pb-2">
-            <div>
-               <span className="text-xs text-slate-400 uppercase font-bold tracking-wider">Exam Details</span>
-               <h4 className="text-white font-semibold">{formatDate(selectedDayInfo.date)}</h4>
-            </div>
-            <button 
-              onClick={() => setSelectedDayInfo(null)}
-              className="p-1 hover:bg-slate-700 rounded text-slate-400 hover:text-white transition-colors"
-            >
-              <X size={18} />
-            </button>
-          </div>
-          
-          <div className="space-y-3">
-            {selectedDayInfo.exams.map(exam => (
-              <div key={exam.id} className="bg-slate-900/50 p-3 rounded-lg border border-slate-700/50">
-                 <div className="flex items-center gap-2 mb-1">
-                   <span className={`w-2 h-2 rounded-full ${getExamColor(exam.type)}`} />
-                   <span className="text-xs font-semibold text-slate-300">{exam.type}</span>
-                 </div>
-                 <p className="font-bold text-indigo-300 text-sm mb-0.5">{exam.code}</p>
-                 <p className="text-slate-200 text-sm leading-tight mb-2">{exam.name}</p>
-                 <div className="flex items-center gap-1.5 text-xs text-slate-400">
-                    <Clock size={12} />
-                    <span>{formatTime(exam.startTime)} - {formatTime(exam.endTime)}</span>
-                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-      
-      {/* Overlay to click out of modal */}
-      {selectedDayInfo && (
-        <div 
-          className="fixed inset-0 z-10 bg-black/20 backdrop-blur-[1px]" 
-          onClick={() => setSelectedDayInfo(null)}
-        />
-      )}
     </div>
   );
 };
@@ -392,7 +315,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 text-slate-200 p-6 font-sans">
-      <div className="max-w-6xl mx-auto space-y-8"> {/* Increased max-width for the full calendar */}
+      <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Full Interactive Calendar appended at the top */}
         <FullCalendar exams={examsData} />
@@ -409,9 +332,9 @@ export default function App() {
                     <BookOpen className="w-6 h-6 text-indigo-400" />
                  </div>
               </div>
-              <h1 className="text-3xl font-bold text-white tracking-tight">Exam Schedule</h1>
+              <h1 className="text-3xl font-bold text-white tracking-tight">Term End Schedule</h1>
               <p className="text-slate-400 text-sm max-w-sm pt-2 leading-relaxed">
-                Stay focused. Track your upcoming papers and manage your revision time effectively.
+                Stay focused. Track your FAT papers and manage your revision time effectively.
               </p>
             </div>
           </div>
@@ -455,7 +378,7 @@ export default function App() {
 
         {/* Grouped Exam Lists */}
         <div className="space-y-10">
-          {['Grade Improvement', 'Mid Term', 'Regular'].map(sectionTitle => {
+          {['Term End', 'Grade Improvement', 'Mid Term', 'Regular'].map(sectionTitle => {
             const sectionExams = groupedExams[sectionTitle];
             if (!sectionExams || sectionExams.length === 0) return null;
 
@@ -464,7 +387,7 @@ export default function App() {
                 <h3 className="text-lg font-semibold text-slate-300 flex items-center gap-2 border-t border-slate-800 pt-6">
                   <Section className={`w-5 h-5 ${
                     sectionTitle === 'Grade Improvement' ? 'text-amber-500' :
-                    sectionTitle === 'Mid Term' ? 'text-indigo-500' : 'text-emerald-500'
+                    sectionTitle === 'Term End' ? 'text-indigo-500' : 'text-emerald-500'
                   }`} />
                   {sectionTitle} Schedule
                 </h3>
